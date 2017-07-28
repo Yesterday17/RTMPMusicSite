@@ -2,7 +2,7 @@ const express = require('express')
 const http = require('http')
 const ffmpeg = require('fluent-ffmpeg');
 const mp3Duration = require('mp3-duration');
-
+const bililive = require('bilibili-live');
 
 
 
@@ -22,20 +22,23 @@ var sleep = function (time) {
     })
 };
 
-var lastProgress = 0;
+var startDate = Date();
 
 var play = liveMusic = function (musicStream) {
     return new Promise(function (resolve, reject) {
         console.log("Playing " + musicStream);
         mp3Duration(musicStream, function (err, duration) {
-            var proc = ffmpeg(musicStream)
+            var proc = ffmpeg(imagePath);
+            proc.loop()
+                .fps(20)
                 //.input("concat:public/test.mp3|public/test2.mp3|public/test3.mp3")
-                .input(imagePath)
-                .loop(duration + offset)
+                .input(musicStream)
                 .audioCodec("libmp3lame")
                 .audioBitrate(128)
                 .on('start', function (cmd) {
                     console.log('Spawned FFmpeg with command: ' + cmd);
+
+                    startDate = Date.now();
                 })
                 .on('error', function (err, stdout, stderr) {
                     console.error('error: ' + err.message);
@@ -45,6 +48,17 @@ var play = liveMusic = function (musicStream) {
                 .on('end', function () {
                     console.log('Processing finished !');
                     resolve();
+                })
+                .on('codecData', function (data) {
+                    console.log(data.audio);
+                })
+                .on("progress", function (prog) {
+                    console.log((new Date() - startDate) / 1000 + "/" + duration);
+
+                    if ((new Date() - startDate) / 1000 >= duration) {
+                        proc.kill('SIGKILL');
+                        resolve();
+                    }
                 })
                 .addOptions([
                     '-vcodec libx264',
@@ -66,7 +80,7 @@ var play = liveMusic = function (musicStream) {
 }
 
 var start = async function () {
-    for(var j = 1;j<=4;j++){
+    for (var j = -1; j <= 4; j++) {
         await play("public/" + j + ".mp3");
         await sleep(1000);
     }
