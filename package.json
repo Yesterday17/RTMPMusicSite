@@ -1,0 +1,28 @@
+{
+  "name": "rtmp_musicsite",
+  "version": "0.1.1",
+  "description": "网易云音乐直播推流-Nodejs",
+  "scripts": {
+    "start": "node app.js",
+    "test": ""
+  },
+  "keywords": [
+    "网易云音乐",
+    "直播",
+    "rtmp"
+  ],
+  "author": "Yesterday17",
+  "license": "MIT",
+  "dependencies": {
+    "big-integer": "^1.6.17",
+    "express": "^4.15.2",
+    "request": "^2.81.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "mp3-duration": "^1.0.10"
+  },
+  "devDependencies": {
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^3.2.0",
+    "power-assert": "^1.4.2"
+  }
+}
