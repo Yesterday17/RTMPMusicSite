@@ -60,9 +60,9 @@ var play = liveMusic = function (musicStream) {
                     console.log(data.audio);
                 })
                 .on("progress", function (prog) {
-                    console.log((new Date() - startDate) / 1000 + "/" + duration);
+                    //console.log((new Date() - startDate) / 1000 + "/" + duration);
 
-                    console.log(prog.percent + "\n" + prog.currentKbps);
+                    console.log(prog.percent + "%");
 
                     /*
                     if ((new Date() - startDate) / 1000 >= duration) {
@@ -71,7 +71,7 @@ var play = liveMusic = function (musicStream) {
                     }
                     */
 
-                    if (prog.percent >= 110) {
+                    if (prog.percent >= 150) {
                         proc.kill('SIGKILL');
                         resolve();
                     }
